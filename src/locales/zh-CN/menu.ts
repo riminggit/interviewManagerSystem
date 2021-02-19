@@ -62,4 +62,6 @@ export default {
   'menu.feedback': '用户反馈',
   'menu.company': '公司管理',
   'menu.userInterview': '用户面试查询',
+  'menu.userAddTopic': '用户新增的题目',
+
 };

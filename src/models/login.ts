@@ -69,7 +69,7 @@ const Model: LoginModelType = {
           search: stringify({
             redirect: window.location.href,
           }),
-        });
+        }); 
       }
     },
   },
