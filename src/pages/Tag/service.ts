@@ -1,9 +1,9 @@
 import request from '@/utils/request';
-// import type { TableListParams, TableListItem } from './data.d';
+import type { queryTagParams,addTagParams} from './data.d';
 
 
 //查询标签
-export async function queryTag(params: { key: number[] }) {
+export async function queryTag(params:queryTagParams) {
     return request('/api/queryTag', {
       method: 'POST',
       data: {
@@ -12,8 +12,9 @@ export async function queryTag(params: { key: number[] }) {
     });
 }
 
+
 //新增标签
-export async function addTag(params: { key: number[] }) {
+export async function addTag(params:addTagParams) {
     return request('/api/addTag', {
       method: 'POST',
       data: {
