@@ -43,7 +43,6 @@ const UserAnalyse: React.FC = () => {
     setVisible(true);
   };
   const handleCancel = () => {
-    console.log('Clicked cancel button');
     setVisible(false);
   };
 
@@ -52,7 +51,7 @@ const UserAnalyse: React.FC = () => {
       <div className={styles.cardContent}>
         <Card style={{ width: 500, height: '100vh',overflow: 'auto'}}>
           <List
-           
+
             itemLayout="horizontal"
             dataSource={tagListData}
             bordered
