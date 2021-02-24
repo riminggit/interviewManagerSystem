@@ -21,7 +21,7 @@ import {
 } from 'antd';
 import { useIntl, FormattedMessage } from 'umi';
 import styles from './index.less';
-import { queryTopic } from './service';
+import { queryTopic, queryClassify, queryCompany, queryKnowledge, queryTag, queryType, addTopic } from './service';
 
 
 const columns = [{
@@ -159,7 +159,7 @@ const UserAnalyse: React.FC = () => {
     <PageContainer>
       <Row gutter={16}>
         <Col span="8" className="leftCard">
-          <Card style={{ width: "100%", overflow: 'auto', height: "80vh" }}>
+          <Card style={{ width: "100%", overflow: 'auto', height: "100vh" }}>
             <Table
               style={{ height: 500 }}
               columns={columns}
@@ -167,13 +167,13 @@ const UserAnalyse: React.FC = () => {
               pagination={pagination}
               loading={loading}
               onChange={handleTableChange}
-              rowKey={record => record}
+              rowKey={(record:any) => record.id}
             />
           </Card>
         </Col>
         <Col span="16" className="rightCard">
-          <Card style={{ width: "100%", overflow: 'auto', height: "80vh" }}>
-          <FormSizeDemo />
+          <Card style={{ width: "100%", overflow: 'auto' }}>
+            <FormSizeDemo />
           </Card>
         </Col>
       </Row>
@@ -187,15 +187,86 @@ const UserAnalyse: React.FC = () => {
 
 
 
-
-
 type SizeType = Parameters<typeof Form>[0]['size'];
 
 const FormSizeDemo = () => {
   const [componentSize, setComponentSize] = useState<SizeType | 'default'>('default');
+  const [classify, setclassify] = useState([]);
+  const [company, setCompany] = useState([]);
+  const [knowledge, setKnowledge] = useState([]);
+  const [tag, setTag] = useState([]);
+  const [type, setType] = useState([]);
+
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
   };
+
+  const onSubmit = (values: any) => {
+    console.log(values)
+  };
+
+  const handleSearchClassify = () => {
+    let param = {};
+    queryClassify(param).then(res => {
+      setclassify(res.data.rows)
+    })
+  };
+
+  const handleSearchCompany = () => {
+    let param = {};
+    queryCompany(param).then(res => {
+      setCompany(res.data.rows)
+    })
+  };
+
+  const handleSearchTag = () => {
+    let param = {};
+    queryTag(param).then(res => {
+      setTag(res.data.rows)
+    })
+  };
+
+  const handleSearchKnowledge = () => {
+    let param = {};
+    queryKnowledge(param).then(res => {
+      setKnowledge(res.data.rows)
+    })
+  };
+
+  const handleSearchType = () => {
+    let param = {};
+    queryType(param).then(res => {
+      setType(res.data.rows)
+    })
+  };
+
+
+  const renderOption = (arr: any[], code: string, name: string) => arr ? arr.map((item, index) => {
+    return (<Option key={index + item[code]} value={item[code]}>{item[name]}</Option>)
+  }) : null
+
+  // const handleSearch = (value: any) => {
+  //   console.log(value,"value")
+  //   if (value) {
+  //     let param = {
+  //       name:value
+  //     };
+  //     queryClassify(param).then(res => {
+  //         console.log(res)
+  //     })
+  //   } else {
+  //     let param = {
+
+  //     };
+  //     queryClassify(param).then(res => {
+  //       console.log(res)
+  //   })
+  //   }
+  // };
+
+
+
+
   return (
     <>
       <Form
@@ -205,56 +276,105 @@ const FormSizeDemo = () => {
         initialValues={{ size: componentSize }}
         onValuesChange={onFormLayoutChange}
         size={componentSize as SizeType}
+        onFinish={onSubmit}
       >
-        <Form.Item label="Form Size" name="size">
-          <Radio.Group>
-            <Radio.Button value="small">Small</Radio.Button>
-            <Radio.Button value="default">Default</Radio.Button>
-            <Radio.Button value="large">Large</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item label="Input">
+        <Form.Item label="标题" name="title">
           <Input />
         </Form.Item>
-        <Form.Item label="Select">
-          <Select>
-            <Select.Option value="demo">Demo</Select.Option>
+        <Form.Item label="难度" name="degree">
+          <Radio.Group>
+            <Radio.Button value='0'>简单</Radio.Button>
+            <Radio.Button value='1'>中等</Radio.Button>
+            <Radio.Button value='2'>难</Radio.Button>
+            <Radio.Button value='3'>极难</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item label="等级" name="level">
+          <Radio.Group>
+            <Radio.Button value='1'>初级</Radio.Button>
+            <Radio.Button value='2'>中级</Radio.Button>
+            <Radio.Button value='3'>高级</Radio.Button>
+            <Radio.Button value='4'>资深</Radio.Button>
+            <Radio.Button value='5'>专家</Radio.Button>
+            <Radio.Button value='6'>资深专家</Radio.Button>
+            <Radio.Button value='7'>研究员</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item label="是否基础题" name="is_base_topic">
+          <Radio.Group>
+            <Radio.Button value='0'>否</Radio.Button>
+            <Radio.Button value='1'>是</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item label="是否重点题" name="is_important_topic">
+          <Radio.Group>
+            <Radio.Button value='0'>否</Radio.Button>
+            <Radio.Button value='1'>是</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+
+        <Form.Item label="选择分类" name="classify_id">
+          <Select
+            allowClear
+            showSearch
+            mode="multiple"
+            optionFilterProp="children"
+            onDropdownVisibleChange={handleSearchClassify}
+          >
+            {renderOption(classify, 'id', 'name')}
           </Select>
         </Form.Item>
-        <Form.Item label="TreeSelect">
-          <TreeSelect
-            treeData={[
-              { title: 'Light', value: 'light', children: [{ title: 'Bamboo', value: 'bamboo' }] },
-            ]}
-          />
+        <Form.Item label="选择二级分类" name="classify_id">
+          <Select
+            allowClear
+            showSearch
+            mode="multiple"
+            optionFilterProp="children"
+            onDropdownVisibleChange={handleSearchType}
+          >
+            {renderOption(type, 'id', 'name')}
+          </Select>
         </Form.Item>
-        <Form.Item label="Cascader">
-          <Cascader
-            options={[
-              {
-                value: 'zhejiang',
-                label: 'Zhejiang',
-                children: [
-                  {
-                    value: 'hangzhou',
-                    label: 'Hangzhou',
-                  },
-                ],
-              },
-            ]}
-          />
+        <Form.Item label="选择公司" name="company_id">
+          <Select
+            allowClear
+            showSearch
+            mode="multiple"
+            optionFilterProp="children"
+            onDropdownVisibleChange={handleSearchCompany}
+          >
+            {renderOption(company, 'id', 'company_name')}
+          </Select>
         </Form.Item>
-        <Form.Item label="DatePicker">
-          <DatePicker />
+        <Form.Item label="选择知识点" name="knowledge_id">
+          <Select
+            allowClear
+            showSearch
+            mode="multiple"
+            optionFilterProp="children"
+            onDropdownVisibleChange={handleSearchKnowledge}
+          >
+            {renderOption(knowledge, 'id', 'title')}
+          </Select>
         </Form.Item>
-        <Form.Item label="InputNumber">
-          <InputNumber />
+        <Form.Item label="选择标签" name="classify_id">
+          <Select
+            allowClear
+            showSearch
+            mode="multiple"
+            optionFilterProp="children"
+            onDropdownVisibleChange={handleSearchTag}
+          >
+            {renderOption(tag, 'id', 'name')}
+          </Select>
         </Form.Item>
-        <Form.Item label="Switch">
-          <Switch />
-        </Form.Item>
-        <Form.Item label="Button">
-          <Button>Button</Button>
+
+
+
+        <Form.Item label={null}>
+          <Button type="primary" htmlType="submit" style={{marginLeft:"9vw"}}>
+            新增题目
+          </Button>
         </Form.Item>
       </Form>
     </>
