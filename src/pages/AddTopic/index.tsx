@@ -22,6 +22,9 @@ import {
 import { useIntl, FormattedMessage } from 'umi';
 import styles from './index.less';
 import { queryTopic, queryClassify, queryCompany, queryKnowledge, queryTag, queryType, addTopic } from './service';
+import BraftEditor from 'braft-editor'
+// 引入编辑器样式
+import 'braft-editor/dist/index.css'
 
 
 const columns = [{
@@ -112,15 +115,13 @@ const columns = [{
 const { Option } = Select;
 
 
-const UserAnalyse: React.FC = () => {
+const AddTopic: React.FC = () => {
 
   const [topicListData, querytopicListData] = useState([]);
   const [paginationTotal, setpaginationTotal] = useState(0);
   const [loading, setloading] = useState(false);
   const [pageNum, setpageNum] = useState(1);
   const [pageSize, setpageSize] = useState(20);
-
-
 
   let pagination = {
     total: paginationTotal,
@@ -167,7 +168,7 @@ const UserAnalyse: React.FC = () => {
               pagination={pagination}
               loading={loading}
               onChange={handleTableChange}
-              rowKey={(record:any) => record.id}
+              rowKey={(record: any) => record.id}
             />
           </Card>
         </Col>
@@ -196,13 +197,17 @@ const FormSizeDemo = () => {
   const [knowledge, setKnowledge] = useState([]);
   const [tag, setTag] = useState([]);
   const [type, setType] = useState([]);
+  const [editorState, setEditorState] = useState(BraftEditor.createEditorState(null));
 
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
   };
 
   const onSubmit = (values: any) => {
-    console.log(values)
+    values.analysis = values.analysis.toHTML()
+    addTopic(values).then(res => {
+      console.log(res,"dsdsd")
+    })
   };
 
   const handleSearchClassify = () => {
@@ -240,6 +245,17 @@ const FormSizeDemo = () => {
     })
   };
 
+  const handleChangeEditor = (editorState: any) => {
+    setEditorState(editorState.toHTML())
+    // console.log(editorState.toHTML(), "===")
+
+    // 将editorState数据转换成RAW字符串(原始字符串)
+    // const rawString = editorState.toRAW()
+    // // editorState.toRAW()方法接收一个布尔值参数，用于决定是否返回RAW JSON对象，默认是false
+    // const rawJSON = editorState.toRAW(true)
+    // // 将editorState数据转换成html字符串
+    // const htmlString = editorState.toHTML()
+  }
 
   const renderOption = (arr: any[], code: string, name: string) => arr ? arr.map((item, index) => {
     return (<Option key={index + item[code]} value={item[code]}>{item[name]}</Option>)
@@ -263,8 +279,6 @@ const FormSizeDemo = () => {
   //   })
   //   }
   // };
-
-
 
 
   return (
@@ -324,7 +338,7 @@ const FormSizeDemo = () => {
             {renderOption(classify, 'id', 'name')}
           </Select>
         </Form.Item>
-        <Form.Item label="选择二级分类" name="classify_id">
+        <Form.Item label="选择二级分类" name="type_id">
           <Select
             allowClear
             showSearch
@@ -357,7 +371,7 @@ const FormSizeDemo = () => {
             {renderOption(knowledge, 'id', 'title')}
           </Select>
         </Form.Item>
-        <Form.Item label="选择标签" name="classify_id">
+        <Form.Item label="选择标签" name="tag_id">
           <Select
             allowClear
             showSearch
@@ -368,11 +382,16 @@ const FormSizeDemo = () => {
             {renderOption(tag, 'id', 'name')}
           </Select>
         </Form.Item>
-
-
+        <Form.Item label="题解" name="analysis">
+          <BraftEditor
+            value={editorState}
+            onChange={handleChangeEditor}
+            style={{ border: ' 1px solid #D3D3D3' }}
+          />
+        </Form.Item>
 
         <Form.Item label={null}>
-          <Button type="primary" htmlType="submit" style={{marginLeft:"9vw"}}>
+          <Button type="primary" htmlType="submit" style={{ marginLeft: "9vw" }}>
             新增题目
           </Button>
         </Form.Item>
@@ -382,5 +401,4 @@ const FormSizeDemo = () => {
 };
 
 
-
-export default UserAnalyse;
+export default AddTopic;

@@ -1,34 +1,35 @@
 import request from '@/utils/request';
-// import type { TableListParams, TableListItem } from './data.d';
+import type { queryTagParams,addTagParams,queryTypeParams} from './data.d';
 
 
-//查询分类
-export async function queryClassify(params: { key: number[] }) {
-    return request('/api/queryClassify', {
+//查询标签
+export async function queryTag(params:queryTagParams) {
+    return request('/api/queryTag', {
       method: 'POST',
       data: {
         ...params,
       },
     });
 }
+
+
+//新增标签
+export async function addTag(params:addTagParams) {
+    return request('/api/addTag', {
+      method: 'POST',
+      data: {
+        ...params,
+      },
+    });
+}
+
 
 //查询题目分类下的类型
-export async function queryType(params: { key: number[] }) {
-    return request('/api/queryType', {
-      method: 'POST',
-      data: {
-        ...params,
-      },
-    });
+export async function queryType(params: queryTypeParams) {
+  return request('/api/queryType', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
 }
-
-//新增题目分类下的类型
-export async function addType(params: { key: number[] }) {
-    return request('/api/addType', {
-      method: 'POST',
-      data: {
-        ...params,
-      },
-    });
-}
-

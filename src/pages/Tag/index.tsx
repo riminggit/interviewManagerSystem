@@ -1,16 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Button, Card, List,  Input,  Popconfirm } from 'antd';
+import { Button, Card, List, Input, Popconfirm, Select } from 'antd';
 import styles from './index.less';
-import { queryTag, addTag } from './service';
-import type { tagListData } from './data.d';
+import { queryTag, addTag, } from './service';
+import type { tagListData, } from './data.d';
 
-const UserAnalyse: React.FC = () => {
+
+const Tag: React.FC = () => {
   const [tagListData, querytagListData] = useState<tagListData>();
   const [tagListDataCount, setTagListDataCount] = useState<number>(0);
   const [addTagName, setAddTagName] = useState<string>('');
-  // const tagListData = useRef<tagListData>(null);
-  // const tagListDataCount = useRef<number>(0);
+
+
+
   let queryTagParam = {};
   useEffect(() => {
     queryTag(queryTagParam).then((res) => {
@@ -19,6 +21,7 @@ const UserAnalyse: React.FC = () => {
         setTagListDataCount(res.data.count);
       }
     });
+
   }, []);
 
   const addTagClick = () => {
@@ -37,6 +40,8 @@ const UserAnalyse: React.FC = () => {
     });
   };
 
+
+
   const [visible, setVisible] = React.useState(false);
   const [confirmLoading, setConfirmLoading] = React.useState(false);
   const showPopconfirm = () => {
@@ -49,7 +54,8 @@ const UserAnalyse: React.FC = () => {
   return (
     <PageContainer>
       <div className={styles.cardContent}>
-        <Card style={{ width: 500, height: '100vh',overflow: 'auto'}}>
+
+        <Card style={{ width: 500, height: '100vh', overflow: 'auto', marginLeft: 20 }}>
           <List
 
             itemLayout="horizontal"
@@ -67,33 +73,37 @@ const UserAnalyse: React.FC = () => {
                 </Button>
               </List.Item>
             )}
-            />
+          />
         </Card>
         <Card style={{ width: 500, marginLeft: 20 }}>
-          <Input
-            placeholder="请输入标签名"
-            allowClear
-            style={{ width: '80%' }}
-            value={addTagName}
-            onChange={(e) => {
-              setAddTagName(e.target.value);
-            }}
-          />
-          <Popconfirm
-            title="确定要新增该标签吗？"
-            visible={visible}
-            onConfirm={addTagClick}
-            okButtonProps={{ loading: confirmLoading }}
-            onCancel={handleCancel}
-          >
-            <Button type="primary" style={{ float: 'right' }} onClick={showPopconfirm}>
-              新增
+          <div className={styles.addTag}>
+            <Input
+              placeholder="请输入标签名"
+              allowClear
+              style={{ width: '80%' }}
+              value={addTagName}
+              onChange={(e) => {
+                setAddTagName(e.target.value);
+              }}
+            />
+            <Popconfirm
+              title="确定要新增该标签吗？"
+              visible={visible}
+              onConfirm={addTagClick}
+              okButtonProps={{ loading: confirmLoading }}
+              onCancel={handleCancel}
+            >
+              <Button type="primary" style={{ float: 'right' }} onClick={showPopconfirm}>
+                新增
             </Button>
-          </Popconfirm>
+            </Popconfirm>
+          </div>
+
+
         </Card>
       </div>
     </PageContainer>
   );
 };
 
-export default UserAnalyse;
+export default Tag;

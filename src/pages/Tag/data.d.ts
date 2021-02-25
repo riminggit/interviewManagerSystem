@@ -14,3 +14,15 @@ export type tagListData = [{
   is_use?: number;
 }];
 
+export type queryTypeParams = {
+  id?: number;
+  name?: string;
+  classify_id?: number;
+};
+
+export type typeListData = [{
+  id?: number;
+  name?: string;
+  classify_id?: number;
+  is_use?: number;
+}];
