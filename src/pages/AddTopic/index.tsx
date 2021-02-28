@@ -198,6 +198,9 @@ const FormSizeDemo = () => {
   const [tag, setTag] = useState([]);
   const [type, setType] = useState([]);
   const [editorState, setEditorState] = useState(BraftEditor.createEditorState(null));
+  const [classifySelect, setclassifySelect] = useState([]);
+
+
 
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
@@ -239,7 +242,9 @@ const FormSizeDemo = () => {
   };
 
   const handleSearchType = () => {
-    let param = {};
+    let param = {
+      classify_id:classifySelect
+    };
     queryType(param).then(res => {
       setType(res.data.rows)
     })
@@ -261,24 +266,11 @@ const FormSizeDemo = () => {
     return (<Option key={index + item[code]} value={item[code]}>{item[name]}</Option>)
   }) : null
 
-  // const handleSearch = (value: any) => {
-  //   console.log(value,"value")
-  //   if (value) {
-  //     let param = {
-  //       name:value
-  //     };
-  //     queryClassify(param).then(res => {
-  //         console.log(res)
-  //     })
-  //   } else {
-  //     let param = {
 
-  //     };
-  //     queryClassify(param).then(res => {
-  //       console.log(res)
-  //   })
-  //   }
-  // };
+
+  const classifyOnselect = (value: any) => {
+    setclassifySelect(value)
+  };
 
 
   return (
@@ -333,6 +325,7 @@ const FormSizeDemo = () => {
             showSearch
             mode="multiple"
             optionFilterProp="children"
+            onChange={classifyOnselect}
             onDropdownVisibleChange={handleSearchClassify}
           >
             {renderOption(classify, 'id', 'name')}
@@ -340,6 +333,7 @@ const FormSizeDemo = () => {
         </Form.Item>
         <Form.Item label="选择二级分类" name="type_id">
           <Select
+            disabled={classifySelect.length!==0?false:true}
             allowClear
             showSearch
             mode="multiple"

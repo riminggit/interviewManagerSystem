@@ -43,7 +43,7 @@ export type queryTagParams = {
 export type queryTypeParams = {
   id?: number;
   name?: string;
-  classify_id?: number;
+  classify_id?: Array;
 };
 
 

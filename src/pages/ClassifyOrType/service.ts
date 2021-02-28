@@ -1,21 +1,12 @@
 import request from '@/utils/request';
-import type { queryTagParams,addTagParams,queryTypeParams} from './data.d';
+import type { queryTagParams,addTagParams,queryTypeParams,queryClassifyParams} from './data.d';
 
 
-//查询标签
-export async function queryTag(params:queryTagParams) {
-    return request('/api/queryTag', {
-      method: 'POST',
-      data: {
-        ...params,
-      },
-    });
-}
 
 
-//新增标签
-export async function addTag(params:addTagParams) {
-    return request('/api/addTag', {
+//新增题目分类下的类型
+export async function addType(params:addTagParams) {
+    return request('/api/addType', {
       method: 'POST',
       data: {
         ...params,
@@ -27,6 +18,17 @@ export async function addTag(params:addTagParams) {
 //查询题目分类下的类型
 export async function queryType(params: queryTypeParams) {
   return request('/api/queryType', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+
+//查询分类
+export async function queryClassify(params: queryClassifyParams) {
+  return request('/api/queryClassify', {
     method: 'POST',
     data: {
       ...params,

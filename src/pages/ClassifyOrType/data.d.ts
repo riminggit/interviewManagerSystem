@@ -25,4 +25,10 @@ export type typeListData = [{
   name?: string;
   classify_id?: number;
   is_use?: number;
+  classify?: any;
 }];
+
+export type queryClassifyParams = {
+  id?: number;
+  name?: string;
+};
