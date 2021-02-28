@@ -13,8 +13,11 @@ export default defineConfig({
     hmr: true,
   },
   history: {
-    type: 'browser',
+    // type: 'browser',
+    type: 'hash',
   },
+  base: './',
+  publicPath:'./',
   locale: {
     // default zh-CN
     default: 'zh-CN',
