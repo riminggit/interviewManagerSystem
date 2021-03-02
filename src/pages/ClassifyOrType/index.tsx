@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Card, List, Input, Popconfirm, Select } from 'antd';
 import styles from './index.less';
-import {  addType, queryType, queryClassify } from './service';
+import { addType, queryType, queryClassify } from './service';
 import type { typeListData } from './data.d';
 
 const { Option } = Select;
@@ -32,7 +32,7 @@ const Tag: React.FC = () => {
   const addTypeClick = () => {
     let addParams = {
       name: addTypeName,
-      classify_id:classifySelect,
+      classify_id: classifySelect,
     };
     addType(addParams).then((val) => {
       setaddTypeName('');
@@ -80,14 +80,14 @@ const Tag: React.FC = () => {
             bordered
             renderItem={(item) => (
               <List.Item>
-                <div style={{ display: 'inline-block',width:150 }}>
+                <div style={{ display: 'inline-block', width: 150 }}>
                   <span>{item.id}</span>
                   {/* <span dangerouslySetInnerHTML={{ __html: item.classify.img_svg }}></span> */}
                   <span style={{ marginLeft: 10 }}>{item.classify.name}</span>
                 </div>
                 <span
                   style={{
-                    width: '10%',
+                    width: '50%',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
@@ -120,9 +120,9 @@ const Tag: React.FC = () => {
                 {renderOption(classify, 'id', 'name')}
               </Select>
             </div>
-            <div style={{marginTop:10}}>
+            <div style={{ marginTop: 10 }}>
               <Input
-                disabled={classifySelect?false:true}
+                disabled={classifySelect ? false : true}
                 placeholder="请输入标签名"
                 allowClear
                 style={{ width: '80%' }}

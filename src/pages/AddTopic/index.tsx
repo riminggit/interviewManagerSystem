@@ -200,8 +200,6 @@ const FormSizeDemo = () => {
   const [editorState, setEditorState] = useState(BraftEditor.createEditorState(null));
   const [classifySelect, setclassifySelect] = useState([]);
 
-
-
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
   };
@@ -263,7 +261,7 @@ const FormSizeDemo = () => {
   }
 
   const renderOption = (arr: any[], code: string, name: string) => arr ? arr.map((item, index) => {
-    return (<Option key={index + item[code]} value={item[code]}>{item[name]}</Option>)
+    return (<Option key={index + item[name]} value={item[code]}>{item[name]}</Option>)
   }) : null
 
 
