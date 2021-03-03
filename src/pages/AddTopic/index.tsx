@@ -18,6 +18,7 @@ import {
   InputNumber,
   TreeSelect,
   Switch,
+  message
 } from 'antd';
 import { useIntl, FormattedMessage } from 'umi';
 import styles from './index.less';
@@ -200,6 +201,13 @@ const FormSizeDemo = () => {
   const [editorState, setEditorState] = useState(BraftEditor.createEditorState(null));
   const [classifySelect, setclassifySelect] = useState([]);
 
+  const [form] = Form.useForm();
+  // const [refresh, setRefresh] = useState(false);
+  // useEffect(() => {
+  //   refresh && setTimeout(() => setRefresh(false));
+  // }, [refresh]);
+
+
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
   };
@@ -207,7 +215,8 @@ const FormSizeDemo = () => {
   const onSubmit = (values: any) => {
     values.analysis = values.analysis.toHTML()
     addTopic(values).then(res => {
-      console.log(res,"dsdsd")
+      // form.setFieldsValue({});
+      message.success(res.data.msg, 10);
     })
   };
 
