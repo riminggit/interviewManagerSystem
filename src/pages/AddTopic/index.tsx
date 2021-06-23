@@ -2,194 +2,46 @@ import React, { useState, useRef, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import {
   Card,
-  Alert,
-  Typography,
   Row,
   Col,
-  List,
   Button,
   Table,
   Select,
   Form,
   Input,
   Radio,
-  Cascader,
-  DatePicker,
-  InputNumber,
-  TreeSelect,
-  Switch,
   message
 } from 'antd';
-import { useIntl, FormattedMessage } from 'umi';
-import styles from './index.less';
-import { queryTopic, queryClassify, queryCompany, queryKnowledge, queryTag, queryType, addTopic } from './service';
+import './index.less';
+import { queryClassify, queryCompany, queryKnowledge, queryTag, queryType, addTopic } from './service';
+import type {
+  ISelectAnalysis
+} from './data.d';
 import BraftEditor from 'braft-editor'
 // 引入编辑器样式
 import 'braft-editor/dist/index.css'
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 
-
-const columns = [{
-  title: '题目',
-  dataIndex: 'title',
-  key: 'title',
-  width: "50%"
-},
-{
-  title: '难度',
-  dataIndex: 'degree',
-  key: 'degree',
-  render: (val: React.ReactNode) => {
-    if (val == 0) {
-      return (
-        <div>简单</div>
-      );
-    } else if (val == 1) {
-      return (
-        <div>中等</div>
-      );
-    } else if (val == 2) {
-      return (
-        <div>难</div>
-      );
-    } else if (val == 3) {
-      return (
-        <div>极难</div>
-      );
-    }
-  },
-},
-{
-  title: '等级',
-  dataIndex: 'level',
-  key: 'level',
-  render: (val: React.ReactNode) => {
-    if (val == 1) {
-      return (
-        <div>初级</div>
-      );
-    } else if (val == 2) {
-      return (
-        <div>中级</div>
-      );
-    } else if (val == 3) {
-      return (
-        <div>高级</div>
-      );
-    } else if (val == 4) {
-      return (
-        <div>资深</div>
-      );
-    } else if (val == 5) {
-      return (
-        <div>专家</div>
-      );
-    } else if (val == 6) {
-      return (
-        <div>资深专家</div>
-      );
-    } else if (val == 7) {
-      return (
-        <div>研究员</div>
-      );
-    }
-  },
-},
-{
-  title: '重点',
-  dataIndex: 'is_important_topic',
-  key: 'is_important_topic',
-  render: (val: React.ReactNode) => {
-    if (val == 0) {
-      return (
-        <div>否</div>
-      );
-    } else if (val == 1) {
-      return (
-        <div>是</div>
-      );
-    }
-  },
-},
-
-];
 
 const { Option } = Select;
 
-
 const AddTopic: React.FC = () => {
-
-  const [topicListData, querytopicListData] = useState([]);
-  const [paginationTotal, setpaginationTotal] = useState(0);
-  const [loading, setloading] = useState(false);
-  const [pageNum, setpageNum] = useState(1);
-  const [pageSize, setpageSize] = useState(20);
-
-  let pagination = {
-    total: paginationTotal,
-    pageSize: pageSize
-  }
-
-
-  let queryTagParam = {
-    condition: 'common',
-    pageNum: pageNum,
-    pageSize: pageSize,
-  };
-
-  const topQueryTopic = () => {
-    setloading(true)
-    queryTopic(queryTagParam).then((res) => {
-      if (res.code === 200) {
-        querytopicListData(res.data.rows);
-        setpaginationTotal(res.data.count)
-        setloading(false)
-      }
-    });
-  }
-
-  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
-    setpageNum(pagination.current)
-    setpageSize(pagination.pageSize)
-    topQueryTopic()
-  };
-
-  useEffect(() => {
-    topQueryTopic()
-  }, []);
 
   return (
     <PageContainer>
-      <Row gutter={16}>
-        <Col span="8" className="leftCard">
-          <Card style={{ width: "100%", overflow: 'auto', height: "100vh" }}>
-            <Table
-              style={{ height: 500 }}
-              columns={columns}
-              dataSource={topicListData}
-              pagination={pagination}
-              loading={loading}
-              onChange={handleTableChange}
-              rowKey={(record: any) => record.id}
-            />
-          </Card>
-        </Col>
-        <Col span="16" className="rightCard">
-          <Card style={{ width: "100%", overflow: 'auto' }}>
-            <FormSizeDemo />
-          </Card>
-        </Col>
-      </Row>
+      <Card style={{ width: "100%", overflow: 'auto' }}>
+        <div className='form-style'>
+          <FormSizeDemo />
+        </div>
+      </Card>
     </PageContainer>
   );
 };
 
 
-
-
-
-
-
 type SizeType = Parameters<typeof Form>[0]['size'];
+
+let selectAnalysisDefault = [{ validity: false, content: '' }, { validity: false, content: '' }, { validity: false, content: '' }]
 
 const FormSizeDemo = () => {
   const [componentSize, setComponentSize] = useState<SizeType | 'default'>('default');
@@ -200,20 +52,19 @@ const FormSizeDemo = () => {
   const [type, setType] = useState([]);
   const [editorState, setEditorState] = useState(BraftEditor.createEditorState(null));
   const [classifySelect, setclassifySelect] = useState([]);
+  const [questionType, setQuestionType] = useState<number>(1);
+  const [selectAnalysis, setSelectAnalysis] = useState<ISelectAnalysis[]>(selectAnalysisDefault);
 
   const [form] = Form.useForm();
-  // const [refresh, setRefresh] = useState(false);
-  // useEffect(() => {
-  //   refresh && setTimeout(() => setRefresh(false));
-  // }, [refresh]);
-
 
   const onFormLayoutChange = ({ size }: { size: SizeType }) => {
     setComponentSize(size);
   };
 
   const onSubmit = (values: any) => {
-    values.analysis = values.analysis.toHTML()
+    questionType !== 1 ? values.analysis = values.analysis.toHTML() : null
+    questionType !== 2 ? values.select_analysis = selectAnalysis : null
+    values.question_type = questionType
     addTopic(values).then(res => {
       // form.setFieldsValue({});
       message.success(res.data.msg, 10);
@@ -250,7 +101,7 @@ const FormSizeDemo = () => {
 
   const handleSearchType = () => {
     let param = {
-      classify_id:classifySelect
+      classify_id: classifySelect
     };
     queryType(param).then(res => {
       setType(res.data.rows)
@@ -274,11 +125,9 @@ const FormSizeDemo = () => {
   }) : null
 
 
-
   const classifyOnselect = (value: any) => {
     setclassifySelect(value)
   };
-
 
   return (
     <>
@@ -293,6 +142,18 @@ const FormSizeDemo = () => {
       >
         <Form.Item label="标题" name="title">
           <Input />
+        </Form.Item>
+        <Form.Item label="题目类型" >
+          <Radio.Group
+            value={questionType}
+            onChange={(e) => {
+              setQuestionType(e.target.value)
+            }}
+          >
+            <Radio.Button value={1}>选择题</Radio.Button>
+            <Radio.Button value={2}>解析题</Radio.Button>
+            <Radio.Button value={3}>选择/解析题</Radio.Button>
+          </Radio.Group>
         </Form.Item>
         <Form.Item label="难度" name="degree">
           <Radio.Group>
@@ -340,7 +201,7 @@ const FormSizeDemo = () => {
         </Form.Item>
         <Form.Item label="选择二级分类" name="type_id">
           <Select
-            disabled={classifySelect.length!==0?false:true}
+            disabled={classifySelect.length !== 0 ? false : true}
             allowClear
             showSearch
             mode="multiple"
@@ -383,16 +244,72 @@ const FormSizeDemo = () => {
             {renderOption(tag, 'id', 'name')}
           </Select>
         </Form.Item>
-        <Form.Item label="题解" name="analysis">
-          <BraftEditor
-            value={editorState}
-            onChange={handleChangeEditor}
-            style={{ border: ' 1px solid #D3D3D3' }}
-          />
-        </Form.Item>
+        {
+          questionType !== 2 ? <Form.Item label="选择题题解">
+            {
+              selectAnalysis.map((item, index) => {
+                return <div key={`${selectAnalysis[index].content}${index}`} style={{ marginTop: 8 }}>
+                  <Radio.Group
+                    value={selectAnalysis[index].validity}
+                    onChange={(e) => {
+                      let help = [...selectAnalysis]
+                      help[index].validity = e.target.value
+                      setSelectAnalysis(help)
+                    }}
+                  >
+                    <Radio.Button value={true}>对</Radio.Button>
+                    <Radio.Button value={false}>错</Radio.Button>
+                  </Radio.Group>
+                  <Input
+                    value={selectAnalysis[index].content}
+                    onChange={(e) => {
+                      let help = [...selectAnalysis]
+                      help[index].content = e.target.value
+                      setSelectAnalysis(help)
+                    }}
+                    style={{ marginLeft: 12, width: 350 }}
+                  />
+                  {
+                    selectAnalysis.length - 1 === index ? <span style={{ marginLeft: 12 }}>
+                      <Button
+                        type='primary'
+                        shape='circle'
+                        icon={<PlusOutlined />}
+                        onClick={() => {
+                          let help = [...selectAnalysis]
+                          help.push({ validity: false, content: '' })
+                          setSelectAnalysis(help)
+                        }}
+                      />
+                      <Button
+                        style={{ marginLeft: 8 }}
+                        shape='circle'
+                        icon={<MinusOutlined />}
+                        onClick={() => {
+                          let help = [...selectAnalysis]
+                          help.splice(index, 1)
+                          setSelectAnalysis(help)
+                        }}
+                      />
+                    </span> : null
+                  }
+                </div>
+              })
+            }
+          </Form.Item> : null
+        }
+        {
+          questionType !== 1 ? <Form.Item label="题解" name="analysis">
+            <BraftEditor
+              value={editorState}
+              onChange={handleChangeEditor}
+              style={{ border: ' 1px solid #D3D3D3' }}
+            />
+          </Form.Item> : null
+        }
 
         <Form.Item label={null}>
-          <Button type="primary" htmlType="submit" style={{ marginLeft: "9vw" }}>
+          <Button type="primary" htmlType="submit" className='add-button'>
             新增题目
           </Button>
         </Form.Item>

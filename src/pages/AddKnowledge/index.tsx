@@ -2,113 +2,32 @@ import React, { useState, useRef, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import {
   Card,
-  Alert,
-  Typography,
   Row,
   Col,
-  List,
   Button,
   Table,
   Select,
   Form,
   Input,
-  Radio,
-  Cascader,
-  DatePicker,
-  InputNumber,
-  TreeSelect,
-  Switch,
 } from 'antd';
-import { useIntl, FormattedMessage } from 'umi';
-import styles from './index.less';
-import { queryKnowledge, queryTag, addKnowledge } from './service';
+import './index.less';
+import { queryTag, addKnowledge } from './service';
 import BraftEditor from 'braft-editor';
 // 引入编辑器样式
 import 'braft-editor/dist/index.css';
 
-const columns = [
-  {
-    title: 'id',
-    dataIndex: 'id',
-    key: 'id',
-  },
-  {
-    title: '知识点标题',
-    dataIndex: 'title',
-    key: 'title',
-  },
-  {
-    title: '标签ID',
-    dataIndex: 'tag_id',
-    key: 'tag_id',
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'create_at',
-    key: 'create_at',
-  },
-];
 
 const { Option } = Select;
 
 const AddKnowledge: React.FC = () => {
-  const [KnowlageListData, queryKnowlageListData] = useState([]);
-  const [paginationTotal, setpaginationTotal] = useState(0);
-  const [loading, setloading] = useState(false);
-  const [pageNum, setpageNum] = useState(1);
-  const [pageSize, setpageSize] = useState(20);
-
-  let pagination = {
-    total: paginationTotal,
-    pageSize: pageSize,
-  };
-
-  let queryKnowlageParams = {
-    pageNum: pageNum,
-    pageSize: pageSize,
-  };
-
-  const toQueryKnowlage = () => {
-    setloading(true);
-    queryKnowledge(queryKnowlageParams).then((res) => {
-      setloading(false);
-      queryKnowlageListData(res.data.rows);
-      setpaginationTotal(res.data.count);
-    });
-  };
-
-  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
-    setpageNum(pagination.current);
-    setpageSize(pagination.pageSize);
-    toQueryKnowlage();
-  };
-
-  useEffect(() => {
-    toQueryKnowlage();
-  }, []);
-
   return (
     <PageContainer>
-      <Row gutter={16}>
-        <Col span="8" className="leftCard">
-          <Card style={{ width: '100%', overflow: 'auto', height: '100vh' }}>
-            <Table
-              style={{ height: 500 }}
-              columns={columns}
-              dataSource={KnowlageListData}
-              pagination={pagination}
-              loading={loading}
-              onChange={handleTableChange}
-              rowKey={(record: any) => record.id}
-            />
-          </Card>
-        </Col>
-        <Col span="16" className="rightCard">
-          <Card style={{ width: '100%', overflow: 'auto' }}>
-            <MyForm />
-          </Card>
-        </Col>
-      </Row>
+      <Card style={{ width: '100%', overflow: 'auto' }}>
+        <div className='form-style'>
+          <MyForm />
+        </div>
+  
+      </Card>
     </PageContainer>
   );
 };
@@ -151,12 +70,12 @@ const MyForm = () => {
   const renderOption = (arr: any[], code: string, name: string) =>
     arr
       ? arr.map((item, index) => {
-          return (
-            <Option key={index + item[code]} value={item[code]}>
-              {item[name]}
-            </Option>
-          );
-        })
+        return (
+          <Option key={index + item[code]} value={item[code]}>
+            {item[name]}
+          </Option>
+        );
+      })
       : null;
 
   return (
@@ -193,7 +112,7 @@ const MyForm = () => {
         </Form.Item>
 
         <Form.Item label={null}>
-          <Button type="primary" htmlType="submit" style={{ marginLeft: '9vw' }}>
+          <Button type="primary" htmlType="submit" className='add-button'>
             新增题目
           </Button>
         </Form.Item>

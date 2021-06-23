@@ -53,12 +53,12 @@ export type addTopicParams = {
   degree?: number;
   level?: number;
   is_base_topic?: number;
-  is_important_topic?: numbe
+  is_important_topic?: number;
 };
 
 
-// export type topicListData = [{
-//   id?: number;
-//   name?: string;
-//   is_use?: number;
-// }];
+export interface ISelectAnalysis {
+    validity:boolean,
+    content:string
+}
+

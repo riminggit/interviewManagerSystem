@@ -26,6 +26,7 @@ export type typeListData = [{
   classify_id?: number;
   is_use?: number;
   classify?: any;
+  change?:number;
 }];
 
 export type queryClassifyParams = {

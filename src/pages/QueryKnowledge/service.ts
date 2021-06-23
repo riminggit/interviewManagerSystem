@@ -1,10 +1,9 @@
 import request from '@/utils/request';
-// import type { TableListParams, TableListItem } from './data.d';
-
+import type { queryTagParams,queryKnowlageParams } from './data.d';
 
 
 //查询知识点数据
-export async function queryKnowledge(params: { key: number[] }) {
+export async function queryKnowledge(params: queryKnowlageParams) {
     return request('/api/queryKnowledge', {
       method: 'POST',
       data: {
@@ -14,12 +13,12 @@ export async function queryKnowledge(params: { key: number[] }) {
 }
 
 //查询标签
-export async function queryTag(params: { key: number[] }) {
-    return request('/api/queryTag', {
-      method: 'POST',
-      data: {
-        ...params,
-      },
-    });
+export async function queryTag(params:queryTagParams) {
+  return request('/api/queryTag', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
 }
 

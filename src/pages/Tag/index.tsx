@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Card, List, Input, Popconfirm, Select } from 'antd';
-import styles from './index.less';
+import './index.less';
 import { queryTag, addTag, } from './service';
 import type { tagListData, } from './data.d';
 
@@ -53,34 +53,13 @@ const Tag: React.FC = () => {
 
   return (
     <PageContainer>
-      <div className={styles.cardContent}>
-
-        <Card style={{ width: 500, height: '100vh', overflow: 'auto', marginLeft: 20 }}>
-          <List
-
-            itemLayout="horizontal"
-            dataSource={tagListData}
-            bordered
-            renderItem={(item) => (
-              <List.Item>
-                <span>{item.id}</span>
-                <span style={{ width: 190 }}>{item.name}</span>
-                <Button type="primary" style={{ float: 'right' }}>
-                  修改
-                </Button>
-                <Button type="primary" danger style={{ float: 'right' }}>
-                  删除
-                </Button>
-              </List.Item>
-            )}
-          />
-        </Card>
-        <Card style={{ width: 500, marginLeft: 20 }}>
-          <div className={styles.addTag}>
+      <div >
+        <Card style={{ width: '100%', marginBottom: 10 }}>
+          <div>
             <Input
               placeholder="请输入标签名"
               allowClear
-              style={{ width: '80%' }}
+              style={{ width: 350 }}
               value={addTagName}
               onChange={(e) => {
                 setAddTagName(e.target.value);
@@ -93,13 +72,34 @@ const Tag: React.FC = () => {
               okButtonProps={{ loading: confirmLoading }}
               onCancel={handleCancel}
             >
-              <Button type="primary" style={{ float: 'right' }} onClick={showPopconfirm}>
+              <Button type="primary" style={{ marginLeft: 15 }} onClick={showPopconfirm}>
                 新增
             </Button>
             </Popconfirm>
           </div>
-
-
+        </Card>
+        <Card style={{ width: '100%', }}>
+          <div style={{ margin: '10px 0', height: '80vh', overflow: 'auto', borderTop: '1px solid #f0f0f0', borderBottom: '1px solid #f0f0f0' }}>
+            <List
+              itemLayout="horizontal"
+              dataSource={tagListData}
+              bordered
+              renderItem={(item) => (
+                <List.Item style={{ display: 'flex' }}>
+                  {/* <div>{item.id}</div> */}
+                  <div >{item.name}</div>
+                  {/* <div style={{ width: 150 }}>
+                  <Button type="primary" style={{ marginRight: 10 }}>
+                    修改
+                  </Button>
+                    <Button type="primary" danger >
+                      删除
+                  </Button>
+                </div> */}
+                </List.Item>
+              )}
+            />
+          </div>
         </Card>
       </div>
     </PageContainer>

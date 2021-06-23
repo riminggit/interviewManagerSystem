@@ -1,20 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Card, List, Input, Popconfirm, Select } from 'antd';
-import styles from './index.less';
+import  './index.less';
 import { addType, queryType, queryClassify } from './service';
 import type { typeListData } from './data.d';
+
 
 const { Option } = Select;
 const renderOption = (arr: any[], code: string, name: string) =>
   arr
     ? arr.map((item, index) => {
-        return (
-          <Option key={index + item[code]} value={item[code]}>
-            {item[name]}
-          </Option>
-        );
-      })
+      return (
+        <Option key={index + item[code]} value={item[code]}>
+          {item[name]}
+        </Option>
+      );
+    })
     : null;
 
 const Tag: React.FC = () => {
@@ -22,6 +23,8 @@ const Tag: React.FC = () => {
   const [type, setType] = useState<typeListData>();
   const [classify, setclassify] = useState([]);
   const [classifySelect, setclassifySelect] = useState();
+  const [visible, setVisible] = React.useState(false);
+  const [confirmLoading, setConfirmLoading] = React.useState(false);
 
   let queryTagParam = {};
   useEffect(() => {
@@ -30,6 +33,7 @@ const Tag: React.FC = () => {
   }, []);
 
   const addTypeClick = () => {
+    setConfirmLoading(true)
     let addParams = {
       name: addTypeName,
       classify_id: classifySelect,
@@ -37,6 +41,7 @@ const Tag: React.FC = () => {
     addType(addParams).then((val) => {
       setaddTypeName('');
       setVisible(false);
+      setConfirmLoading(false)
       queryType(queryTagParam).then((res) => {
         setType(res.data.rows);
       });
@@ -50,8 +55,7 @@ const Tag: React.FC = () => {
     });
   };
 
-  const [visible, setVisible] = React.useState(false);
-  const [confirmLoading, setConfirmLoading] = React.useState(false);
+
   const showPopconfirm = () => {
     setVisible(true);
   };
@@ -72,43 +76,10 @@ const Tag: React.FC = () => {
 
   return (
     <PageContainer>
-      <div className={styles.cardContent}>
-        <Card style={{ width: 800, height: '100vh', overflow: 'auto' }}>
-          <List
-            itemLayout="horizontal"
-            dataSource={type}
-            bordered
-            renderItem={(item) => (
-              <List.Item>
-                <div style={{ display: 'inline-block', width: 150 }}>
-                  <span>{item.id}</span>
-                  {/* <span dangerouslySetInnerHTML={{ __html: item.classify.img_svg }}></span> */}
-                  <span style={{ marginLeft: 10 }}>{item.classify.name}</span>
-                </div>
-                <span
-                  style={{
-                    width: '50%',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {item.name}
-                </span>
-                <div style={{ display: 'inline-block' }}>
-                  <Button type="primary">修改</Button>
-                  <Button type="primary" danger style={{ marginLeft: 10 }}>
-                    删除
-                  </Button>
-                </div>
-              </List.Item>
-            )}
-          />
-        </Card>
-
-        <Card style={{ width: 500, marginLeft: 20 }}>
-          <div className={styles.addTag}>
-            <div style={{ width: '100%' }}>
+      <div >
+        <Card style={{ width: '100%', marginBottom: 10 }}>
+          <div style={{ display: 'flex' }}>
+            <div style={{ width: '300px' }}>
               <Select
                 style={{ width: '80%' }}
                 allowClear
@@ -120,7 +91,7 @@ const Tag: React.FC = () => {
                 {renderOption(classify, 'id', 'name')}
               </Select>
             </div>
-            <div style={{ marginTop: 10 }}>
+            <div style={{ width: '300px' }}>
               <Input
                 disabled={classifySelect ? false : true}
                 placeholder="请输入标签名"
@@ -131,6 +102,8 @@ const Tag: React.FC = () => {
                   setaddTypeName(e.target.value);
                 }}
               />
+            </div>
+            <div>
               <Popconfirm
                 title="确定要新增该标签吗？"
                 visible={visible}
@@ -144,7 +117,51 @@ const Tag: React.FC = () => {
               </Popconfirm>
             </div>
           </div>
+          <div style={{ marginTop: 10 }} className='search'>
+
+          </div>
         </Card>
+
+        <Card style={{ width: '100%' }}>
+          <div style={{ margin: '10px 0', height: '70vh', overflow: 'auto', borderTop: '1px solid #f0f0f0', borderBottom: '1px solid #f0f0f0' }}>
+            <List
+              itemLayout="horizontal"
+              dataSource={type}
+              bordered
+              renderItem={(item, index) => {
+              // let svg = new DOMParser().parseFromString(item.classify.img_svg,"text/xml") 
+              return (
+                <List.Item style={{ display: 'flex'}}>
+                  <div style={{ width: 150,display: 'flex',alignItems:'center'}}>
+                    <img 
+                      src={`data:image/svg+xml;base64,${window.btoa(item.classify.img_svg)}`} 
+                      style={{height:35}}
+                    />
+                    <div style={{ marginLeft: 10 }}>{item.classify.name}</div>
+                  </div>
+                  <div
+                    style={{
+                      width: '50%',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {item.name}
+                  </div>
+                  <div >
+                    <Button type="primary">修改</Button>
+                    <Button type="primary" danger style={{ marginLeft: 10 }}>
+                      删除
+                    </Button>
+                  </div>
+                </List.Item>
+              )}}
+            />
+          </div>
+        </Card>
+
+
       </div>
     </PageContainer>
   );
